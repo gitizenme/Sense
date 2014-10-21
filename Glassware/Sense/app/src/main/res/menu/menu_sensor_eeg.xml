@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/start_sensor_sensordrone"
+        android:icon="@drawable/ic_sensor_sensordrone"
+        android:title="Start"
+        />
+    <item
+        android:id="@+id/back_sense"
+        android:icon="@drawable/ic_sense_logo"
+        android:title="Back"
+       />
+
+</menu>

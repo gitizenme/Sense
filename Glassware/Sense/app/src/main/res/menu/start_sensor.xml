@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/sensor_node"
+        android:icon="@drawable/ic_sensor_50"
+        android:title="@string/sensor_node"
+        android:visible="false"
+        />
+    <item
+        android:id="@+id/sensor_sensordrone"
+        android:icon="@drawable/ic_sensor_50"
+        android:title="@string/sensor_sensordrone"
+        android:visible="false"
+       />
+    <item
+        android:id="@+id/sensor_eeg"
+        android:icon="@drawable/ic_sensor_50"
+        android:title="@string/sensor_eeg"
+        android:visible="false"
+        />
+    <item
+        android:id="@+id/sensor_scan"
+        android:icon="@drawable/ic_sensor_50"
+        android:title="@string/sensor_scan"
+        />
+
+</menu>

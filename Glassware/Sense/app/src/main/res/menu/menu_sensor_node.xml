@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/start_sensor_node"
+        android:icon="@drawable/ic_sensor_nodeplus"
+        android:title="Start Node"
+        android:visible="true"
+        />
+    <item
+        android:id="@+id/start_sensor_clima"
+        android:icon="@drawable/ic_sensor_clima"
+        android:title="Start Clima"
+        android:visible="false"
+        />
+    <item
+        android:id="@+id/share_sensor_clima"
+        android:icon="@drawable/ic_sensor_clima"
+        android:title="Share Clima"
+        android:visible="false"
+        />
+    <item
+        android:id="@+id/start_sensor_luma"
+        android:icon="@drawable/ic_sensor_luma"
+        android:title="Start Luma"
+        android:visible="false"
+        />
+    <item
+        android:id="@+id/back_sense"
+        android:icon="@drawable/ic_sense_logo"
+        android:title="Back"
+       />
+
+</menu>
