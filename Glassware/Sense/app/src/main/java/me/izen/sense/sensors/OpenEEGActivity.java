@@ -1,20 +1,11 @@
 package me.izen.sense.sensors;
 
-import android.content.Intent;
-
-import me.izen.sense.MainActivity;
-import me.izen.sense.R;
-import me.izen.sense.ble.OpenEEGService;
-
-import java.io.UnsupportedEncodingException;
-import java.text.*;
-import java.util.*;
-
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -22,88 +13,35 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.androidplot.util.PlotStatistics;
-import com.androidplot.xy.*;
-
+import com.androidplot.xy.LineAndPointFormatter;
+import com.androidplot.xy.PointLabelFormatter;
+import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.XYPlot;
+import com.androidplot.xy.XYStepMode;
 import com.google.android.glass.touchpad.Gesture;
 
+import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import me.izen.sense.MainActivity;
+import me.izen.sense.R;
+import me.izen.sense.ble.OpenEEGService;
 import me.izen.sense.model.SensorBaseModel;
 
 /**
  * Created by joe on 10/19/14.
  */
-public class OpenEEGActivity  extends BaseSensorActivity {
+public class OpenEEGActivity extends BaseSensorActivity {
+    final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
     private final static String TAG = OpenEEGActivity.class.getSimpleName();
-
-    private String mDeviceName;
-    private String mDeviceAddress;
-    private OpenEEGService mBluetoothLeService;
-
-    private Map<UUID, BluetoothGattCharacteristic> map = new HashMap<UUID, BluetoothGattCharacteristic>();
-
-    private long[] dataValues;
-    private XYPlot openEEGPlot = null;
-    private SimpleXYSeries openEEGSeries = null;
-    private SimpleXYSeries openEKGSeries = null;
-    private SimpleXYSeries openBIOFSeries = null;
-
-    private static final int HISTORY_SIZE = 30;
-
-    boolean startDelimFound = false;
-    private String dataBuffer = "";
-    private String rawSensorData = "";
-
-
-    private static IntentFilter makeGattUpdateIntentFilter() {
-        final IntentFilter intentFilter = new IntentFilter();
-
-        intentFilter.addAction(OpenEEGService.ACTION_GATT_CONNECTED);
-        intentFilter.addAction(OpenEEGService.ACTION_GATT_DISCONNECTED);
-        intentFilter.addAction(OpenEEGService.ACTION_GATT_SERVICES_DISCOVERED);
-        intentFilter.addAction(OpenEEGService.ACTION_DATA_AVAILABLE);
-
-        return intentFilter;
-    }
-
-    private void getGattService(BluetoothGattService gattService) {
-        if (gattService == null)
-            return;
-
-        BluetoothGattCharacteristic characteristic = gattService
-                .getCharacteristic(OpenEEGService.UUID_BLE_SHIELD_TX);
-        map.put(characteristic.getUuid(), characteristic);
-
-        BluetoothGattCharacteristic characteristicRx = gattService
-                .getCharacteristic(OpenEEGService.UUID_BLE_SHIELD_RX);
-        mBluetoothLeService.setCharacteristicNotification(characteristicRx,
-                true);
-        mBluetoothLeService.readCharacteristic(characteristicRx);
-    }
-
-
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName componentName,
-                                       IBinder service) {
-            mBluetoothLeService = ((OpenEEGService.LocalBinder) service).getService();
-            if (!mBluetoothLeService.initialize()) {
-                Log.e(TAG, "Unable to initialize Bluetooth");
-                finish();
-            }
-            // Automatically connects to the device upon successful start-up
-            // initialization.
-            mBluetoothLeService.connect(mDeviceAddress);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            mBluetoothLeService = null;
-        }
-    };
-
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.v(TAG, "BEGIN: mGattUpdateReceiver");
             final String action = intent.getAction();
 
             if (OpenEEGService.ACTION_GATT_DISCONNECTED.equals(action)) {
@@ -119,27 +57,53 @@ public class OpenEEGActivity  extends BaseSensorActivity {
             }
         }
     };
+    private static final int HISTORY_SIZE = 30;
+    boolean startDelimFound = false;
+    private String mDeviceName;
+    private String mDeviceAddress;
+    private OpenEEGService mBluetoothLeService;
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
+        @Override
+        public void onServiceConnected(ComponentName componentName,
+                                       IBinder service) {
+            Log.v(TAG, "BEGIN: onServiceConnected");
+            mBluetoothLeService = ((OpenEEGService.LocalBinder) service).getService();
+            if (!mBluetoothLeService.initialize()) {
+                Log.e(TAG, "Unable to initialize Bluetooth");
+                finish();
+            }
+            // Automatically connects to the device upon successful start-up
+            // initialization.
+            mBluetoothLeService.connect(mDeviceAddress);
+        }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            Log.v(TAG, "BEGIN: onServiceDisconnected");
+            mBluetoothLeService = null;
+        }
+    };
+    private Map<UUID, BluetoothGattCharacteristic> map = new HashMap<UUID, BluetoothGattCharacteristic>();
+    private long[] dataValues;
+    private XYPlot openEEGPlot = null;
+    private SimpleXYSeries openEEGSeries = null;
+    private SimpleXYSeries openEKGSeries = null;
+    private SimpleXYSeries openBIOFSeries = null;
+    private String dataBuffer = "";
+    private String rawSensorData = "";
 
-        unregisterReceiver(mGattUpdateReceiver);
+    private static IntentFilter makeGattUpdateIntentFilter() {
+        Log.v(TAG, "BEGIN: makeGattUpdateIntentFilter");
+        final IntentFilter intentFilter = new IntentFilter();
+
+        intentFilter.addAction(OpenEEGService.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(OpenEEGService.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(OpenEEGService.ACTION_GATT_SERVICES_DISCOVERED);
+        intentFilter.addAction(OpenEEGService.ACTION_DATA_AVAILABLE);
+
+        return intentFilter;
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        mBluetoothLeService.disconnect();
-        mBluetoothLeService.close();
-
-    }
-
-
-    final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
-
 
     public static char[] bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
@@ -151,6 +115,50 @@ public class OpenEEGActivity  extends BaseSensorActivity {
         return hexChars;
     }
 
+    private void getGattService(BluetoothGattService gattService) {
+        if (gattService == null)
+            return;
+        Log.v(TAG, "BEGIN: getGattService");
+
+        BluetoothGattCharacteristic characteristic = gattService
+                .getCharacteristic(OpenEEGService.UUID_BLE_SHIELD_TX);
+        map.put(characteristic.getUuid(), characteristic);
+
+        BluetoothGattCharacteristic characteristicRx = gattService
+                .getCharacteristic(OpenEEGService.UUID_BLE_SHIELD_RX);
+        mBluetoothLeService.setCharacteristicNotification(characteristicRx,
+                true);
+        mBluetoothLeService.readCharacteristic(characteristicRx);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.v(TAG, "BEGIN: onStop");
+
+        if (mGattUpdateReceiver != null) {
+            unregisterReceiver(mGattUpdateReceiver);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.v(TAG, "BEGIN: onDestroy");
+
+        if (mBluetoothLeService != null) {
+            mBluetoothLeService.disconnect();
+            mBluetoothLeService.close();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.v(TAG, "BEGIN: onResume");
+
+        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+    }
 
     private boolean processRawData(String rawSensorData, long[] dataValues) {
 
@@ -205,53 +213,6 @@ public class OpenEEGActivity  extends BaseSensorActivity {
         return true;
     }
 
-
-    public static class KPM {
-        /**
-         * Search the data byte array for the first occurrence
-         * of the byte array pattern.
-         */
-        public static int indexOf(byte[] data, byte[] pattern) {
-            int[] failure = computeFailure(pattern);
-
-            int j = 0;
-
-            for (int i = 0; i < data.length; i++) {
-                while (j > 0 && pattern[j] != data[i]) {
-                    j = failure[j - 1];
-                }
-                if (pattern[j] == data[i]) {
-                    j++;
-                }
-                if (j == pattern.length) {
-                    return i - pattern.length + 1;
-                }
-            }
-            return -1;
-        }
-
-        /**
-         * Computes the failure function using a boot-strapping process,
-         * where the pattern is matched against itself.
-         */
-        private static int[] computeFailure(byte[] pattern) {
-            int[] failure = new int[pattern.length];
-
-            int j = 0;
-            for (int i = 1; i < pattern.length; i++) {
-                while (j > 0 && pattern[j] != pattern[i]) {
-                    j = failure[j - 1];
-                }
-                if (pattern[j] == pattern[i]) {
-                    j++;
-                }
-                failure[i] = j;
-            }
-
-            return failure;
-        }
-    }
-
     private void displayData(byte[] byteArray) throws UnsupportedEncodingException {
         if (byteArray != null) {
 
@@ -272,7 +233,7 @@ public class OpenEEGActivity  extends BaseSensorActivity {
                 Log.d(TAG, "rawSensorData = " + rawSensorData.getBytes());
                 dataValues = new long[3];
                 processRawData(rawSensorData, dataValues);
-                Log.i(TAG, "values = " +  Arrays.toString(dataValues));
+                Log.i(TAG, "values = " + Arrays.toString(dataValues));
                 updatePlot(dataValues);
 
                 if (charArray.length > 16 && charArray[17] == 0xA5 && charArray[18] == 0x5A) {
@@ -345,7 +306,6 @@ A5 5A 02 01 02 00 01 D7 01 BF 01 A7 01 D4 01 F0 01
         openEEGPlot.redraw();
     }
 
-
     @Override
     protected SensorBaseModel createSensorModel() {
         return null;
@@ -406,7 +366,6 @@ A5 5A 02 01 02 00 01 D7 01 BF 01 A7 01 D4 01 F0 01
 
     }
 
-
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -433,6 +392,52 @@ A5 5A 02 01 02 00 01 D7 01 BF 01 A7 01 D4 01 F0 01
     @Override
     protected boolean handleSensorGesture(Gesture gesture) {
         return false;
+    }
+
+    public static class KPM {
+        /**
+         * Search the data byte array for the first occurrence
+         * of the byte array pattern.
+         */
+        public static int indexOf(byte[] data, byte[] pattern) {
+            int[] failure = computeFailure(pattern);
+
+            int j = 0;
+
+            for (int i = 0; i < data.length; i++) {
+                while (j > 0 && pattern[j] != data[i]) {
+                    j = failure[j - 1];
+                }
+                if (pattern[j] == data[i]) {
+                    j++;
+                }
+                if (j == pattern.length) {
+                    return i - pattern.length + 1;
+                }
+            }
+            return -1;
+        }
+
+        /**
+         * Computes the failure function using a boot-strapping process,
+         * where the pattern is matched against itself.
+         */
+        private static int[] computeFailure(byte[] pattern) {
+            int[] failure = new int[pattern.length];
+
+            int j = 0;
+            for (int i = 1; i < pattern.length; i++) {
+                while (j > 0 && pattern[j] != pattern[i]) {
+                    j = failure[j - 1];
+                }
+                if (pattern[j] == pattern[i]) {
+                    j++;
+                }
+                failure[i] = j;
+            }
+
+            return failure;
+        }
     }
 
 

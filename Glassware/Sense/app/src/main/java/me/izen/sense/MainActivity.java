@@ -29,7 +29,6 @@ import me.izen.sense.sensors.OpenEEGActivity;
 import me.izen.sense.sensors.SensordroneActivity;
 
 
-
 /**
  * An {@link Activity} showing a menu of sensors that can be connected to Glass
  * <p/>
@@ -37,10 +36,12 @@ import me.izen.sense.sensors.SensordroneActivity;
  */
 public class MainActivity extends Activity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
     public static final String DEVICE_EKG_EMG = "EKG/EMG";
     public static final String DEVICE_SENSORDRONE = "Sensordrone";
     public static final String DEVICE_NODE = "NODE-";
+    public final static String EXTRA_DEVICE_ADDRESS = "EXTRA_DEVICE_ADDRESS";
+    public final static String EXTRA_DEVICE_NAME = "EXTRA_DEVICE_NAME";
+    private static final String TAG = MainActivity.class.getSimpleName();
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -77,16 +78,14 @@ public class MainActivity extends Activity {
                 if (device.getName() != null) {
                     if (!mDeviceList.containsKey(device.getName())) {
                         if (device.getName().startsWith(DEVICE_NODE) || device.getName().startsWith(DEVICE_SENSORDRONE) ||
-                        device.getName().startsWith(DEVICE_EKG_EMG) ) {
-                            if(device.getBondState() == BluetoothDevice.BOND_BONDED) {
+                                device.getName().startsWith(DEVICE_EKG_EMG)) {
+                            if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
                                 saveSensor(device);
-                            }
-                            else if(device.getName().startsWith(DEVICE_SENSORDRONE)) {
+                            } else if (device.getName().startsWith(DEVICE_SENSORDRONE)) {
                                 device.setPairingConfirmation(false);
                                 device.setPin("0000".getBytes());
                                 device.createBond();
-                            }
-                            else if(device.getName().startsWith(DEVICE_EKG_EMG)) {
+                            } else if (device.getName().startsWith(DEVICE_EKG_EMG)) {
                                 saveSensor(device);
                             }
                         }
@@ -106,22 +105,6 @@ public class MainActivity extends Activity {
             }
         }
     };
-
-    private void saveSensor(BluetoothDevice device) {
-        updateStatus("found sensor: " + device.getName());
-        if (device.getName().startsWith(DEVICE_NODE)) {
-            MenuItem item = sensorMenu.findItem(R.id.sensor_node);
-            item.setVisible(true);
-        } else if (device.getName().startsWith(DEVICE_SENSORDRONE)) {
-            MenuItem item = sensorMenu.findItem(R.id.sensor_sensordrone);
-            item.setVisible(true);
-        } else if (device.getName().startsWith(DEVICE_EKG_EMG)) {
-            MenuItem item = sensorMenu.findItem(R.id.sensor_eeg);
-            item.setVisible(true);
-        }
-        mDeviceList.put(device.getName(), device);
-    }
-
     private static BluetoothService mService;
     /**
      * Handler used to post requests to start new activities so that the menu closing animation
@@ -155,6 +138,21 @@ public class MainActivity extends Activity {
     private GestureDetector mGestureDetector;
     private TextView appActivity;
     private Menu sensorMenu;
+
+    private void saveSensor(BluetoothDevice device) {
+        updateStatus("found sensor: " + device.getName());
+        if (device.getName().startsWith(DEVICE_NODE)) {
+            MenuItem item = sensorMenu.findItem(R.id.sensor_node);
+            item.setVisible(true);
+        } else if (device.getName().startsWith(DEVICE_SENSORDRONE)) {
+            MenuItem item = sensorMenu.findItem(R.id.sensor_sensordrone);
+            item.setVisible(true);
+        } else if (device.getName().startsWith(DEVICE_EKG_EMG)) {
+            MenuItem item = sensorMenu.findItem(R.id.sensor_eeg);
+            item.setVisible(true);
+        }
+        mDeviceList.put(device.getName(), device);
+    }
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -288,7 +286,7 @@ public class MainActivity extends Activity {
         String bondedDevice = new String();
         int i = 0;
         for (BluetoothDevice device : mBondedDevices) {
-            if(device.getName().startsWith(DEVICE_NODE)) {
+            if (device.getName().startsWith(DEVICE_NODE)) {
                 bondedDevice = device.getName();
                 break;
             }
@@ -311,7 +309,7 @@ public class MainActivity extends Activity {
         String bondedDevice = new String();
         int i = 0;
         for (BluetoothDevice device : mBondedDevices) {
-            if(device.getName().startsWith(DEVICE_SENSORDRONE)) {
+            if (device.getName().startsWith(DEVICE_SENSORDRONE)) {
                 bondedDevice = device.getName();
                 break;
             }
@@ -321,17 +319,13 @@ public class MainActivity extends Activity {
         startActivity(intent);
     }
 
-    public final static String EXTRA_DEVICE_ADDRESS = "EXTRA_DEVICE_ADDRESS";
-    public final static String EXTRA_DEVICE_NAME = "EXTRA_DEVICE_NAME";
-
-
     private void startOpenEEG() {
 
         BluetoothDevice device = null;
         while (mDeviceList.keySet().iterator().hasNext()) {
-            String deviceName =  mDeviceList.keySet().iterator().next();
+            String deviceName = mDeviceList.keySet().iterator().next();
 
-            if(deviceName.startsWith(DEVICE_EKG_EMG)) {
+            if (deviceName.startsWith(DEVICE_EKG_EMG)) {
                 device = mDeviceList.get(deviceName);
                 break;
             }

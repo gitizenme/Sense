@@ -12,15 +12,32 @@ import java.util.ArrayList;
 
 public class SenseApplication extends Application {
 
-    public Drone myDrone;
-
     public static String token;
-
-
+    public static NodeDevice mActiveNode;
+    private static BluetoothService mBluetoothService;
+    public final ArrayList<BluetoothDevice> mDiscoveredDevices = new ArrayList<BluetoothDevice>();
+    public Drone myDrone;
     // Set some streaming rates, so we can switch back to a default rate when
     // coming back from graphing.
     public int defaultRate = 1000;
     public int streamingRate;
+
+    public static final BluetoothService getService() {
+        return mBluetoothService;
+    }
+
+    public static final BluetoothService setServiceAPI(BluetoothService api) {
+        mBluetoothService = api;
+        return mBluetoothService;
+    }
+
+    public static NodeDevice getActiveNode() {
+        return mActiveNode;
+    }
+
+    public static void setActiveNode(NodeDevice node) {
+        mActiveNode = node;
+    }
 
     @Override
     public void onCreate() {
@@ -29,21 +46,4 @@ public class SenseApplication extends Application {
         myDrone = new Drone();
         streamingRate = defaultRate;
     }
-
-    private static BluetoothService mBluetoothService;
-    public  final ArrayList<BluetoothDevice> mDiscoveredDevices = new ArrayList<BluetoothDevice>();
-    public static NodeDevice mActiveNode;
-
-    public static final BluetoothService getService(){
-        return mBluetoothService;
-    }
-
-    public static final BluetoothService setServiceAPI(BluetoothService api){
-        mBluetoothService = api;
-        return mBluetoothService;
-    }
-
-    public static void setActiveNode(NodeDevice node){ mActiveNode = node; }
-
-    public static NodeDevice getActiveNode(){  return mActiveNode; }
 }

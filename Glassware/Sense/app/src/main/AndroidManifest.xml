@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="me.izen.sense"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.0">
 
     <uses-feature
         android:name="android.hardware.bluetooth"
@@ -24,11 +24,11 @@
         android:name=".SenseApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" >
+        android:label="@string/app_name">
         <activity
             android:name=".MainActivity"
             android:icon="@drawable/ic_sense_logo"
-            android:label="@string/title_activity_main" >
+            android:label="@string/title_activity_main">
             <intent-filter>
                 <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
             </intent-filter>
@@ -43,6 +43,13 @@
         <activity
             android:name=".sensors.SensordroneActivity"
             android:immersive="true" />
+        <activity
+            android:name=".sensors.OpenEEGActivity"
+            android:immersive="true" />
+
+        <service
+            android:name=".ble.OpenEEGService"
+            android:enabled="true" />
     </application>
 
 </manifest>

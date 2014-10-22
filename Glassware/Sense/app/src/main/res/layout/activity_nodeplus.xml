@@ -5,16 +5,14 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="@dimen/cardMargin"
     android:layout_marginRight="@dimen/cardMargin"
-    android:keepScreenOn="true"
-    >
+    android:keepScreenOn="true">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="@string/sensor_node"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        />
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/device_name"
@@ -24,8 +22,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/margin_mid"
         android:text="@string/empty_string"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        />
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
         android:id="@+id/tip_tap_for_options"
@@ -35,6 +32,5 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/tip_margin_bottom"
         android:text="@string/tap_for_sensor_options"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        />
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 </RelativeLayout>

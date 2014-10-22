@@ -15,7 +15,7 @@ public abstract class MessageConstants {
     public static final int MESSAGE_CLIMA_PRESSURE = 6;
 
     public static final int MESSAGE_THERMA_TEMPERATURE = 7;
-    public static final int MESSAGE_CHANGE_IR_THERMA   = 8;
+    public static final int MESSAGE_CHANGE_IR_THERMA = 8;
     public static final int MESSAGE_EMISSIVITY_NUMBER_UPDATE = 10;
     public static final int MESSAGE_OXA_READING = 9;
     public static final int MESSAGE_OXA_BASELINE_A = 10;
@@ -27,7 +27,7 @@ public abstract class MessageConstants {
     public static final String Z_VALUE_KEY = "com.variable.api.demo.Z_READING_VALUE_KEY";
 
 
-    public static final String TIME_STAMP  = "com.variable.api.demo.TIME_STAMP_KEY";
+    public static final String TIME_STAMP = "com.variable.api.demo.TIME_STAMP_KEY";
     public static final String TIME_SOURCE = "com.variable.api.demo.TIME_SOURCE";
 
     public static final int MESSAGE_INIT_NODE_PROGRESS = 11;

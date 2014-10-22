@@ -1,10 +1,7 @@
 package me.izen.sense;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -16,7 +13,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,10 +41,9 @@ public class ShareSensorOnTimelineTask extends AsyncTask<String, Void, Void> {
             // Execute HTTP Post Request
             HttpResponse response = httpclient.execute(httppost);
 
-            if(response.getStatusLine().getStatusCode() == 200) {
+            if (response.getStatusLine().getStatusCode() == 200) {
                 Log.d(TAG, "Sensor data shared on timeline");
-            }
-            else {
+            } else {
                 Log.d(TAG, "Share failed");
             }
 

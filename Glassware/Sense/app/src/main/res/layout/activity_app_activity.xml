@@ -5,8 +5,7 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="@dimen/cardMargin"
     android:layout_marginRight="@dimen/cardMargin"
-    android:keepScreenOn="true"
-    >
+    android:keepScreenOn="true">
 
     <TextView
         android:id="@+id/activity_status"
@@ -16,6 +15,5 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/tip_margin_bottom"
         android:text="please wait..."
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        />
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 </RelativeLayout>

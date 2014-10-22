@@ -6,12 +6,10 @@
         android:id="@+id/save_clima"
         android:icon="@drawable/ic_sensor_nodeplus"
         android:title="Save"
-        android:visible="true"
-        />
+        android:visible="true" />
     <item
         android:id="@+id/back_sense"
         android:icon="@drawable/ic_sense_logo"
-        android:title="Back"
-       />
+        android:title="Back" />
 
 </menu>

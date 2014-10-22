@@ -4,12 +4,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Chronometer;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.google.android.glass.media.Sounds;
 import com.google.android.glass.touchpad.Gesture;
@@ -29,6 +26,12 @@ import me.izen.sense.model.SensorBaseModel;
  */
 public class SensordroneActivity extends BaseSensorActivity {
     private static final String TAG = SensordroneActivity.class.getSimpleName();
+    // Text to display
+    private static final String[] SENSOR_NAMES = {"Temperature (Ambient)",
+            "Humidity", "Pressure", "Object Temperature (IR)",
+            "Illuminance (calculated)", "Precision Gas (CO equivalent)",
+            "Proximity Capacitance", "External Voltage (0-3V)",
+            "Altitude (calculated)"};
     /*
      * We will use some stuff from our Sensordrone Helper library
      */
@@ -48,17 +51,8 @@ public class SensordroneActivity extends BaseSensorActivity {
     private TextView temperatureText;
     private TextView deviceNameTextView;
     private Chronometer chrono;
-
     // An int[] that will hold the QS_TYPEs for our sensors of interest
     private int[] qsSensors;
-
-    // Text to display
-    private static final String[] SENSOR_NAMES = { "Temperature (Ambient)",
-            "Humidity", "Pressure", "Object Temperature (IR)",
-            "Illuminance (calculated)", "Precision Gas (CO equivalent)",
-            "Proximity Capacitance", "External Voltage (0-3V)",
-            "Altitude (calculated)" };
-
     // Figure out how many sensors we have based on the length of our labels
     private int numberOfSensors = SENSOR_NAMES.length;
 
@@ -91,14 +85,14 @@ public class SensordroneActivity extends BaseSensorActivity {
         // Get out Application so we have access to our Drone
         droneApp = (SenseApplication) getApplication();
 
-        qsSensors = new int[] { droneApp.myDrone.QS_TYPE_TEMPERATURE,
+        qsSensors = new int[]{droneApp.myDrone.QS_TYPE_TEMPERATURE,
                 droneApp.myDrone.QS_TYPE_HUMIDITY,
                 droneApp.myDrone.QS_TYPE_PRESSURE,
                 droneApp.myDrone.QS_TYPE_IR_TEMPERATURE,
                 droneApp.myDrone.QS_TYPE_RGBC,
                 droneApp.myDrone.QS_TYPE_PRECISION_GAS,
                 droneApp.myDrone.QS_TYPE_CAPACITANCE,
-                droneApp.myDrone.QS_TYPE_ADC, droneApp.myDrone.QS_TYPE_ALTITUDE };
+                droneApp.myDrone.QS_TYPE_ADC, droneApp.myDrone.QS_TYPE_ALTITUDE};
 
         for (int i = 0; i < numberOfSensors; i++) {
 
@@ -298,7 +292,7 @@ public class SensordroneActivity extends BaseSensorActivity {
 
 
         		/*
-		 * Set up our status listener
+         * Set up our status listener
 		 *
 		 * see adcStatus for the general flow for sensors.
 		 */
@@ -497,8 +491,6 @@ public class SensordroneActivity extends BaseSensorActivity {
     }
 
 
-
-
     @Override
     public void onDestroy() {
         Log.d(TAG, "BEGIN: onDestroy");
@@ -614,7 +606,7 @@ public class SensordroneActivity extends BaseSensorActivity {
         droneApp.myDrone.quickDisable(qsSensors[2]);
         droneApp.myDrone.quickDisable(qsSensors[4]);
 
-        if(chrono != null) {
+        if (chrono != null) {
             chrono.stop();
         }
 

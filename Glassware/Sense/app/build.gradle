@@ -12,7 +12,7 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        applicationId "izen.izen.sense"
+        applicationId "me.izen.sense"
         minSdkVersion 19
         targetSdkVersion 21
         versionCode 1
