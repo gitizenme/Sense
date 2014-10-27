@@ -7,5 +7,5 @@
     <string name="sensor_scan">Scan</string>
     <string name="tap_for_options">tap to configure</string>
     <string name="title_activity_main">Sense</string>
-    <string name="sensor_eeg">EEG</string>
+    <string name="sensor_eeg">EKG/EMG</string>
 </resources>
